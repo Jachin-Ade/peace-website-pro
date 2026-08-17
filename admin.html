@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Submissions - Admin</title>
+  <style>
+    :root {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f8fbff;
+      color: #0f172a;
+    }
+
+    body {
+      margin: 0;
+      padding: 1.5rem;
+    }
+
+    .container {
+      width: min(1200px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .submissions-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .submission {
+      background: white;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+    }
+
+    .submission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      padding-bottom: 1rem;
+    }
+
+    .submission-meta {
+      flex: 1;
+    }
+
+    .submission-meta strong {
+      display: block;
+      color: #0f172a;
+    }
+
+    .submission-email {
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .submission-time {
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .submission-message {
+      color: #1e293b;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: #64748b;
+    }
+
+    .stats {
+      background: #2563eb;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="index.html">← Back to website</a>
+    <h1>Contact Form Submissions</h1>
+
+    <div class="stats">
+      <span id="count">Loading...</span>
+    </div>
+
+    <div id="submissionsList" class="submissions-list">
+      <div class="loading">Loading submissions...</div>
+    </div>
+  </div>
+
+  <script>
+    async function loadSubmissions() {
+      try {
+        const response = await fetch('/api/submissions');
+        const submissions = await response.json();
+
+        const list = document.getElementById('submissionsList');
+        const count = document.getElementById('count');
+
+        if (submissions.length === 0) {
+          list.innerHTML = '<div class="empty-state">No submissions yet.</div>';
+          count.textContent = 'No submissions';
+          return;
+        }
+
+        count.textContent = `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`;
+
+        list.innerHTML = submissions
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          .map(
+            (sub) => `
+          <div class="submission">
+            <div class="submission-header">
+              <div class="submission-meta">
+                <strong>${escapeHtml(sub.name)}</strong>
+                <div class="submission-email">${escapeHtml(sub.email)}</div>
+                <div class="submission-time">${new Date(sub.timestamp).toLocaleString()}</div>
+              </div>
+              <button class="delete-btn" onclick="deleteSubmission(${sub.id})">Delete</button>
+            </div>
+            <div class="submission-message">${escapeHtml(sub.message)}</div>
+          </div>
+        `
+          )
+          .join('');
+      } catch (error) {
+        document.getElementById('submissionsList').innerHTML =
+          '<div class="empty-state">Error loading submissions. Make sure the server is running.</div>';
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function deleteSubmission(id) {
+      if (confirm('Delete this submission?')) {
+        await fetch(`/api/submissions/${id}`, { method: 'DELETE' });
+        loadSubmissions();
+      }
+    }
+
+    loadSubmissions();
+    setInterval(loadSubmissions, 2000);
+  </script>
+</body>
+</html>

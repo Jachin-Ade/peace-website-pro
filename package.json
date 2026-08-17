@@ -1,0 +1,17 @@
+{
+  "name": "The Peace Maker",
+  "version": "1.0.0",
+  "description": "A personal website with contact form and admin panel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["website", "contact-form", "express", "admin-panel"],
+  "author": "The Peace Maker",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5"
+  }
+}

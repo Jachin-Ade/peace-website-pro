@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Peace Maker</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-content">
+            <div class="logo">
+                <img src="logo.png" alt="Peace Website Logo">
+                <span>The Peace Maker</span>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </header>
+    <main>
+        <section id="home" class="hero">
+            <div class="container hero-content">
+                <div>
+                    <p class="eyebrow">Welcome to our movement</p>
+                    <h1>Welcome to the Peace Maker blog</h1>
+                    <p class="hero-text">Believe in the power of peace. Discover inspiring stories, practical wisdom, and actionable insights to transform your life and the world around you.</p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#contact">Get in Touch</a>
+                        <a class="btn btn-secondary" href="about.html">Learn More</a>
+                    </div>
+                </div>
+                <div class="hero-illustration">
+                    <div class="hero-card">
+                        <img src="logos.png" alt="Peace Illustration">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="about" class="about section">
+            <div class="container about-content">
+                <div>
+                    <h2>About The Peace Maker</h2>
+                    <p class="section-description">Learn more about our mission to promote peace, understanding, and positive change in the world.</p>
+                    <p>We believe that peace starts within each individual and radiates outward to create meaningful change. Our blog is dedicated to sharing stories, strategies, and insights that empower people to live more peacefully and make a difference.</p>
+                    <a class="btn btn-primary" href="about.html" style="margin-top: var(--space-lg);">Read Our Full Story</a>
+                </div>
+                <div class="about-stats">
+                    <div class="about-stats-item">
+                        <span class="about-stats-value">10K+</span>
+                        <span class="about-stats-label">Active Readers</span>
+                    </div>
+                    <div class="about-stats-item">
+                        <span class="about-stats-value">500+</span>
+                        <span class="about-stats-label">Articles Published</span>
+                    </div>
+                    <div class="about-stats-item">
+                        <span class="about-stats-value">50+</span>
+                        <span class="about-stats-label">Peace Advocates</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="contact" class="contact section">
+            <div class="container contact-content">
+                <div>
+                    <h2>Get in Touch</h2>
+                    <p class="section-description">Have questions or feedback? We'd love to hear from you. Reach out to us and let's make a difference together.</p>
+                    <p style="color: var(--text-muted); margin-bottom: var(--space-lg);">Whether you want to collaborate, share your story, or simply connect, we're here to listen.</p>
+                </div>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="example@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <p class="form-message"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2026 The Peace Maker. Empowering peace, one story at a time.</p>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="#contact">Contact</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#terms">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.querySelector('body').classList.toggle('dark', currentTheme === 'dark');
+        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark');
+            document.body.classList.toggle('dark', !isDark);
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            themeToggle.textContent = isDark ? '🌙' : '☀️';
+        });
+
+        // Contact Form
+        const contactForm = document.querySelector('.contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const message = contactForm.querySelector('.form-message');
+                message.textContent = 'Thank you! We\'ll get back to you soon.';
+                message.classList.remove('error');
+                contactForm.reset();
+                setTimeout(() => {
+                    message.textContent = '';
+                }, 3000);
+            });
+        }
+    </script>
+</body>
