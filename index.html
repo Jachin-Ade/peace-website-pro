@@ -118,15 +118,35 @@
         // Contact Form
         const contactForm = document.querySelector('.contact-form');
         if (contactForm) {
-            contactForm.addEventListener('submit', (e) => {
+            contactForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const message = contactForm.querySelector('.form-message');
-                message.textContent = 'Thank you! We\'ll get back to you soon.';
-                message.classList.remove('error');
-                contactForm.reset();
-                setTimeout(() => {
-                    message.textContent = '';
-                }, 3000);
+
+                try {
+                    const response = await fetch('/api/contact', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: contactForm.querySelector('#name').value,
+                            email: contactForm.querySelector('#email').value,
+                            message: contactForm.querySelector('#message').value,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Unable to submit the form');
+                    }
+
+                    message.textContent = 'Thank you! We\'ll get back to you soon.';
+                    message.classList.remove('error');
+                    contactForm.reset();
+                    setTimeout(() => {
+                        message.textContent = '';
+                    }, 3000);
+                } catch (error) {
+                    message.textContent = 'Sorry, your message could not be sent. Please try again.';
+                    message.classList.add('error');
+                }
             });
         }
     </script>
